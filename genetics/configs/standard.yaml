@@ -1,0 +1,6 @@
+population_size: 10
+num_generations: 50000
+input_img_path: './input/mona_lisa.jpg'
+input_img_alias: 'Mona Lisa'
+images_to_fill_dir: './data'
+samples_to_save: 1000
