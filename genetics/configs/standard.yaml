@@ -1,6 +1,6 @@
-population_size: 10
-num_generations: 50000
-input_img_path: './input/mona_lisa.jpg'
-input_img_alias: 'Mona Lisa'
-images_to_fill_dir: './data'
+population_size: 2
+num_generations: 500000
+input_img_path: './input/cat.jpg'
+input_img_alias: 'Cat'
+images_to_fill_dir: './cats'
 samples_to_save: 1000

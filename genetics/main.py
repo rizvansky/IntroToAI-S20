@@ -24,7 +24,7 @@ def main():
     images_to_fill = load_images(images_to_fill_dir)
     samples_to_save = config['samples_to_save']
     save_every = num_generations // samples_to_save
-    population = create_initial_population(population_size, input_img)
+    population = create_initial_population(population_size, input_img, images_to_fill)
 
     if not os.path.isdir('./output'):
         os.mkdir('./output')
@@ -40,9 +40,10 @@ def main():
         if i == 0 or (i + 1) % save_every == 0:
             pil_img = Image.fromarray(population[0][0])
             pil_img.save(f'{save_dir}/generation{i + 1}.png')
+            print(f'\nGeneration {i + 1}, fitness = {population[0][1]}')
         best_half = population[0: len(population) // 2]
         to_mutate = population[len(population) // 2: len(population)]
-        mutated = mutate(to_mutate, 10, input_img, images_to_fill)
+        mutated = mutate(to_mutate, 30, input_img, images_to_fill)
 
         population = best_half + mutated
         counter.update(1)

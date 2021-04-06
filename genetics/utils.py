@@ -55,16 +55,14 @@ Generate valid coordinates for the 16x16 image to be inserted
 
 def generate_coords():
     x, y = np.random.randint(0, 32), np.random.randint(0, 32)
-    if x == 0:
-        x = 0
-    elif y == 0:
-        y = 0
-    elif x == 31:
+    if x == 31:
         x = 31 * 16 - 1
-    elif y == 31:
+    else:
+        x = x * 16
+    if y == 31:
         y = 31 * 16 - 1
     else:
-        x, y = x * 16, y * 16
+        y = y * 16
 
     return x, y
 
@@ -103,13 +101,25 @@ Function that creates the initial population
 '''
 
 
-def create_initial_population(population_size, input_img):
+def create_initial_population(population_size, input_img, images_to_fill):
     population = []
 
-    blank = np.zeros(shape=[512, 512, 3], dtype=np.uint8)
-    initial_fitness = fitness(blank, input_img)
     for i in range(population_size):
-        population.append([blank.copy(), initial_fitness])
+        first = np.zeros(shape=[512, 512, 3], dtype=np.uint8)
+        x, y = 0, 0
+        for k in range(32):
+            for j in range(32):
+                if k == 31:
+                    x = 31 * 16 - 1
+                else:
+                    x = k * 16
+                if j == 31:
+                    y = 31 * 16 - 1
+                else:
+                    y = j * 16
+                fill_image(first, x, y, images_to_fill)
+        first_fitness = fitness(first, input_img)
+        population.append([first, first_fitness])
 
     return population
 
@@ -125,18 +135,25 @@ def mutate(to_mutate, num_mutations, input_img, images_to_fill):
     mutated = []
     for i in range(len(to_mutate)):
         best = [None, None]
-        for j in range(num_mutations):
-            mutant = to_mutate[i][0].copy()
-            x, y = generate_coords()
-            fill_image(mutant, x, y, images_to_fill)
-            current_fitness = fitness(mutant, input_img)
+        p = np.random.randint(0, 10)
+        if p < 8:
+            for j in range(num_mutations):
+                mutant = to_mutate[i][0].copy()
+                x, y = generate_coords()
+                fill_image(mutant, x, y, images_to_fill)
+                input_img = np.array(input_img)
+                current_fitness = fitness(mutant[x: x + 16, y: y + 16, :], input_img[x: x + 16, y: y + 16, :])
 
-            # Select the mutant with the best mutation to return
-            if best[1] is None:
-                best = [mutant, current_fitness]
-            elif current_fitness < best[1]:
-                best = [mutant, current_fitness]
+                # Select the mutant with the best mutation to return
+                if best[1] is None:
+                    best = [mutant, current_fitness]
+                elif current_fitness < best[1]:
+                    best = [mutant, current_fitness]
 
-        mutated.append(best)
+            best[1] = fitness(best[0], input_img)
+            mutated.append(best)
+
+        else:
+            mutated.append(to_mutate[i])
 
     return mutated
