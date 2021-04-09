@@ -1,6 +1,20 @@
-population_size: 2
-num_generations: 500000
-input_img_path: './input/cat.jpg'
-input_img_alias: 'Cat'
-images_to_fill_dir: './cats'
-samples_to_save: 1000
+# Population size
+population_size: 50
+
+# Number of generations
+num_generations: 50000
+
+# Path to the image to be approximated
+target_img_path: './input/mona_lisa.jpg'
+
+# Output folder name for this target image
+target_img_alias: 'Mona Lisa'
+
+# Path to the output folder directory for all target images
+output_dir: './output'
+
+# Path to the directory with letters which are used for approximation
+letters_dir: './letters'
+
+# Number of the samples to save (1 sample - 1 generation)
+samples_to_save: 500

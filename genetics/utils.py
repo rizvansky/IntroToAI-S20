@@ -1,22 +1,30 @@
 import numpy as np
 from PIL import Image
 from glob import glob
-
-'''
-Fitness function is the Mean Square Error loss
-'''
+from offspring import Offspring
 
 
-def fitness(fake_img, true_img):
-    return np.sum(1 / (512 * 512 * 3) * (true_img - fake_img) * (true_img - fake_img))
+def fitness(img_array, target_img):
+    """
+    Fitness function
 
+    Args:
+        img_array: A [512, 512, 3] Numpy array of pixels of an image produced by an evolutionary algorithm
+        target_img: The target array of pixels of an image to be approximated
 
-'''
-Merge sort of population by the fitness function.
-'''
+    Returns:
+        Mean Square Error between two arrays
+    """
+    return np.sum(1 / (512 * 512 * 3) * (target_img - img_array) * (target_img - img_array))
 
 
 def sort_by_fitness(population):
+    """
+    Merge sort of population by the fitness function
+
+    Args:
+        population: An array with elements like: [offspring, fitness]
+    """
     if len(population) > 1:
         left = population[: len(population) // 2]
         right = population[len(population) // 2:]
@@ -48,112 +56,120 @@ def sort_by_fitness(population):
             k += 1
 
 
-'''
-Generate valid coordinates for the 16x16 image to be inserted
-'''
+def set_letter(img_array, x, y, letter):
+    """
+    Set the given Numpy array [16, 16, 3] of pixels of the given letter to the (x, y) position in the 'img_array'
+
+    Args:
+        img_array: [512, 512, 3] Numpy array containing the pixels of the image
+        x: X-coordinate where the letter will be set
+        y: Y-coordinate where the letter will be set
+        letter: Numpy array [16, 16, 3] of pixels of the given letter to be set
+    """
+    img_array[x: x + 16, y: y + 16, :] = letter
 
 
-def generate_coords():
-    x, y = np.random.randint(0, 32), np.random.randint(0, 32)
-    if x == 31:
-        x = 31 * 16 - 1
-    else:
-        x = x * 16
-    if y == 31:
-        y = 31 * 16 - 1
-    else:
-        y = y * 16
+def load_letters(letters_dir):
+    """
+    Load the images from the given directory and return them in list.
 
-    return x, y
+    Args:
+        letters_dir: Path to the directory with 16x16 images with letters
 
-
-'''
-Insert the 16x16 image into the generated image.
-This function is used for mutation.
-'''
-
-
-def fill_image(mutant, x, y, images_to_fill):
-    img_to_fill = images_to_fill[np.random.randint(0, len(images_to_fill))]
-    mutant[x: x + 16, y: y + 16, :] = img_to_fill
-
-
-'''
-Function that loads the images from the given directory and returns them in list
-'''
-
-
-def load_images(img_dir):
-    images_to_fill = []
-    obj_paths = glob(f'{img_dir}/*')
+    Returns:
+        The list containing the loaded Numpy arrays [16, 16, 3] of pixels of letters
+    """
+    letters = []
+    obj_paths = glob(f'{letters_dir}/*')
 
     for obj_path in obj_paths:
         obj = Image.open(obj_path)
         obj_arr = np.array(obj)
-        images_to_fill.append(obj_arr)
+        letters.append(obj_arr)
         obj.close()
 
-    return images_to_fill
+    return letters
 
 
-'''
-Function that creates the initial population
-'''
+def build_image(offspring, letters):
+    """
+    Build an image from corresponding to the offspring using its gene.
+
+    Args:
+         offspring: Offspring class object
+         letters: List of the Numpy arrays with pixels of 16x16 letter images
+
+    Returns:
+        Numpy array [512, 512, 3] with pixels of an image
+    """
+    img_array = np.zeros([512, 512, 3], dtype=np.uint8)
+    gene = offspring.gene
+    index = 0
+    for i in range(32):
+        for j in range(32):
+            if i == 31:
+                x = 31 * 16 - 1
+            else:
+                x = i * 16
+            if j == 31:
+                y = 31 * 16 - 1
+            else:
+                y = j * 16
+
+            set_letter(img_array, x, y, letters[gene[index]])
+
+            index += 1
+
+    return img_array
 
 
-def create_initial_population(population_size, input_img, images_to_fill):
+def init_population(population_size, target_img, letters):
+    """
+    Create the initial population
+
+    Args:
+        population_size: The size of the population
+        target_img: The image to be approximated
+        letters: List of the letter images
+
+    Returns:
+        The list with offsprings and their fitness
+    """
     population = []
 
     for i in range(population_size):
-        first = np.zeros(shape=[512, 512, 3], dtype=np.uint8)
-        x, y = 0, 0
-        for k in range(32):
-            for j in range(32):
-                if k == 31:
-                    x = 31 * 16 - 1
-                else:
-                    x = k * 16
-                if j == 31:
-                    y = 31 * 16 - 1
-                else:
-                    y = j * 16
-                fill_image(first, x, y, images_to_fill)
-        first_fitness = fitness(first, input_img)
-        population.append([first, first_fitness])
+        gene = []
+        for j in range(1024):
+            cell = np.random.randint(low=0, high=len(letters))
+            gene.append(cell)
+
+        offspring = Offspring(gene)
+        fitness_value = fitness(build_image(offspring, letters), target_img)
+        population.append([offspring, fitness_value])
 
     return population
 
 
-'''
-Mutation function
-Performs <num_mutations> random mutations on one sample, selects the best mutation according to fitness function and 
-includes this mutant in the list of mutants to be returned to the caller.
-'''
+def crossover(first, second):
+    """
+    Make crossover of two individuals
 
+    Args:
+        first: Offspring class object, first offspring
+        second: Offspring class object, second offspring
+    """
+    first_gene = first.gene
+    second_gene = second.gene
 
-def mutate(to_mutate, num_mutations, input_img, images_to_fill):
-    mutated = []
-    for i in range(len(to_mutate)):
-        best = [None, None]
-        p = np.random.randint(0, 10)
-        if p < 8:
-            for j in range(num_mutations):
-                mutant = to_mutate[i][0].copy()
-                x, y = generate_coords()
-                fill_image(mutant, x, y, images_to_fill)
-                input_img = np.array(input_img)
-                current_fitness = fitness(mutant[x: x + 16, y: y + 16, :], input_img[x: x + 16, y: y + 16, :])
+    pivot = np.random.randint(1, len(first.gene) - 1)
 
-                # Select the mutant with the best mutation to return
-                if best[1] is None:
-                    best = [mutant, current_fitness]
-                elif current_fitness < best[1]:
-                    best = [mutant, current_fitness]
+    new_gene = []
+    for i in range(pivot):
+        new_gene.append(first_gene[i])
 
-            best[1] = fitness(best[0], input_img)
-            mutated.append(best)
+    for i in range(pivot, len(first.gene)):
+        new_gene.append(second_gene[i])
 
-        else:
-            mutated.append(to_mutate[i])
+    crossover_offspring = Offspring(new_gene)
 
-    return mutated
+    return crossover_offspring
