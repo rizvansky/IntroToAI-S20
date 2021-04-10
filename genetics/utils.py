@@ -148,28 +148,3 @@ def init_population(population_size, target_img, letters):
         population.append([offspring, fitness_value])
 
     return population
-
-
-def crossover(first, second):
-    """
-    Make crossover of two individuals
-
-    Args:
-        first: Offspring class object, first offspring
-        second: Offspring class object, second offspring
-    """
-    first_gene = first.gene
-    second_gene = second.gene
-
-    pivot = np.random.randint(1, len(first.gene) - 1)
-
-    new_gene = []
-    for i in range(pivot):
-        new_gene.append(first_gene[i])
-
-    for i in range(pivot, len(first.gene)):
-        new_gene.append(second_gene[i])
-
-    crossover_offspring = Offspring(new_gene)
-
-    return crossover_offspring

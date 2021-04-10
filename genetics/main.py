@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', '-c', default='./configs/standard.yaml')
+    parser.add_argument('--config', '-c')
     args = parser.parse_args()
 
     # Get the config path from the command line argument and read the config file
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         for k in range(int(population_size * 0.2)):
             for m in range(int(population_size * 0.2)):
                 if k != m:
-                    crossover_offspring = crossover(population[k][0], population[m][0])
+                    crossover_offspring = population[k][0].cross(population[m][0])
                     crossover_offspring_fitness = fitness(build_image(crossover_offspring, letters), target_img)
                     crossover_offsprings.append([crossover_offspring, crossover_offspring_fitness])
 
@@ -75,5 +75,5 @@ if __name__ == '__main__':
             pil_img = Image.fromarray(build_image(population[0][0], letters))
             pil_img.save(f'{save_dir}/generation{i + 1}.png')
 
-        fitness_log.set_description_str(f'Current fitness: {population[0][1]}')
+        fitness_log.set_description_str(f'Current fitness error: {population[0][1]}')
         counter.update(1)
