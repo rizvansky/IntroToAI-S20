@@ -33,8 +33,6 @@ class Offspring:
             New offspring obtained by the crossover (child of these two offsprings)
         """
 
-        new_gene = []
-
         mask = np.random.rand(len(self.gene)) > 0.5
         new_gene = self.gene * mask + second.gene * (~mask)
 

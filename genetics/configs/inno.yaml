@@ -2,7 +2,7 @@
 population_size: 50
 
 # Number of generations
-num_generations: 50000
+num_generations: 25000
 
 # Path to the image to be approximated
 target_img_path: './input/inno.jpg'

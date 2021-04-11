@@ -62,7 +62,8 @@ if __name__ == '__main__':
         sort_by_fitness(crossover_offsprings)
 
         # Include best crossed offsprings to the next 20% of the future generation
-        population[int(population_size * 0.1): int(population_size * 0.3)] = crossover_offsprings[0: int(population_size * 0.2)]
+        population[int(population_size * 0.1): int(population_size * 0.3)] = \
+            crossover_offsprings[0: int(population_size * 0.2)]
 
         # Mutate all offsprings except top 10% of the population which goes to the next generation without changes
         for j in range(int(population_size * 0.1), population_size):
