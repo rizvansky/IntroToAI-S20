@@ -28,13 +28,13 @@ python create_gif.py -c 'configs/mona_lisa.yaml'
 
 ## Examples
 1. Mona Lisa (25000 generations)
-![1](./gifs/Mona Lisa.gif)
+![1](./gifs/mona_lisa.gif)
 
 2. Doctor Brown (25000 generations)
-![2](./gifs/Doctor Brown.gif)
+![2](./gifs/doctor_brown.gif)
 
 3. Naruto (25000 generations)
-![3](./gifs/Naruto.gif)
+![3](./gifs/naruto.gif)
 
 4. Avocado (25000 generations)
-![4](./gifs/Avocado.gif)
+![4](./gifs/avocado.gif)
