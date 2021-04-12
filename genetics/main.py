@@ -41,9 +41,11 @@ if __name__ == '__main__':
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
 
+    # Progress bar
+    counter = tqdm.tqdm(total=num_generations, desc='Generations', position=0, leave=True)
+    fitness_log = tqdm.tqdm(total=0, position=1, bar_format='{desc}', leave=True)
+
     # Genetic algorithm
-    counter = tqdm.tqdm(total=num_generations, desc='Generations', position=0, leave=True)  # logging generations
-    fitness_log = tqdm.tqdm(total=0, position=1, bar_format='{desc}', leave=True)           # logging fitness
     for i in range(num_generations):
         
         # Sort the whole population by fitness values
@@ -55,7 +57,7 @@ if __name__ == '__main__':
             for m in range(int(population_size * 0.2)):
                 if k != m:
                     crossover_offspring = population[k][0].cross(population[m][0])
-                    crossover_offspring_fitness = fitness(build_image(crossover_offspring, letters), target_img)
+                    crossover_offspring_fitness = fitness(build_image(crossover_offspring, letters), np.array(target_img))
                     crossover_offsprings.append([crossover_offspring, crossover_offspring_fitness])
 
         # Sort obtained after the crossover offsprings by fitness values
@@ -69,7 +71,7 @@ if __name__ == '__main__':
         for j in range(int(population_size * 0.1), population_size):
             population[j][0].mutate(letters)
             img_array = build_image(population[j][0], letters)
-            population[j][1] = fitness(img_array, target_img)
+            population[j][1] = fitness(img_array, np.array(target_img))
 
         # Logging and saving intermediate images
         if i == 0 or (i + 1) % save_every == 0:

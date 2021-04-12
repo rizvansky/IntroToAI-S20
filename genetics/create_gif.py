@@ -16,8 +16,9 @@ if __name__ == '__main__':
     images = []
 
     counter = 0
-    step = config['num_generations'] // config['samples_to_save']
-    for i in range(config['samples_to_save']):
+    step = (config['num_generations'] // config['samples_to_save'])
+    STRIDE = 2
+    for i in range(config['samples_to_save'] // STRIDE):
         if counter == 0:
             img_path = f'{config["output_dir"]}/{config["target_img_alias"]}/generation{1}.png'
         else:
@@ -25,10 +26,10 @@ if __name__ == '__main__':
 
         img = Image.open(img_path)
         images.append(img)
-        counter += step
+        counter += step * STRIDE
 
-    save_gif_path = f'{config["output_dir"]}/{config["target_img_alias"]}/evolution.gif'
-    images[0].save(save_gif_path, save_all=True, append_images=images[1:], duration=0.001, loop=0)
+    save_gif_path = f'gifs/{config["target_img_alias"]}.gif'
+    images[0].save(save_gif_path, save_all=True, append_images=images[1:], duration=1, loop=0)
 
     for img in images:
         img.close()

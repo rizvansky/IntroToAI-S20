@@ -1,0 +1,20 @@
+# Population size
+population_size: 50
+
+# Number of generations
+num_generations: 25000
+
+# Path to the image to be approximated
+target_img_path: './input/dr_brown.jpg'
+
+# Output folder name for this target image
+target_img_alias: 'Doctor Brown'
+
+# Path to the output folder directory for all target images
+output_dir: './output'
+
+# Path to the directory with letters which are used for approximation
+letters_dir: './letters/dr_brown'
+
+# Number of the samples to save (1 sample - 1 generation)
+samples_to_save: 500

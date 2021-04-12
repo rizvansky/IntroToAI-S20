@@ -9,8 +9,8 @@ def fitness(img_array, target_img):
     Fitness function
 
     Args:
-        img_array: A [512, 512, 3] Numpy array of pixels of an image produced by an evolutionary algorithm
-        target_img: The target array of pixels of an image to be approximated
+        img_array: A [512, 512, 3] Numpy array of pixels of an image produced by genetic algorithm
+        target_img: A 512x512 pixels target image to be approximated
 
     Returns:
         Mean Square Error between two arrays
@@ -20,10 +20,10 @@ def fitness(img_array, target_img):
 
 def sort_by_fitness(population):
     """
-    Merge sort of population by the fitness function
+    Merge sort of population by the fitness error
 
     Args:
-        population: An array with elements like: [offspring, fitness]
+        population: An array with elements like: [offspring: Offspring, fitness: float]
     """
     if len(population) > 1:
         left = population[: len(population) // 2]
@@ -58,7 +58,8 @@ def sort_by_fitness(population):
 
 def set_letter(img_array, x, y, letter):
     """
-    Set the given Numpy array [16, 16, 3] of pixels of the given letter to the (x, y) position in the 'img_array'
+    Fill with the given Numpy array [16, 16, 3] of pixels of the given letter the 16x16 pixels square with the top left
+    corner at (x, y) in the 'img_array'
 
     Args:
         img_array: [512, 512, 3] Numpy array containing the pixels of the image
@@ -71,7 +72,7 @@ def set_letter(img_array, x, y, letter):
 
 def load_letters(letters_dir):
     """
-    Load the images from the given directory and return them in list.
+    Load the letter images from the given directory and return them in list
 
     Args:
         letters_dir: Path to the directory with 16x16 images with letters
@@ -93,7 +94,7 @@ def load_letters(letters_dir):
 
 def build_image(offspring, letters):
     """
-    Build an image from corresponding to the offspring using its gene.
+    Construct an image using the offspring's chromosome
 
     Args:
          offspring: Offspring class object
@@ -103,7 +104,7 @@ def build_image(offspring, letters):
         Numpy array [512, 512, 3] with pixels of an image
     """
     img_array = np.zeros([512, 512, 3], dtype=np.uint8)
-    gene = offspring.gene
+    gene = offspring.chromosome
     index = 0
     for i in range(32):
         for j in range(32):
