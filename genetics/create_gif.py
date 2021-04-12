@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
         counter += step * STRIDE
 
-    save_gif_path = f'gifs/{config["target_img_alias"]}.gif'
+    save_gif_path = f'gifs/{config["target_img_alias"].replace(" ", "_").lower()}.gif'
     images[0].save(save_gif_path, save_all=True, append_images=images[1:], duration=1, loop=0)
 
     for img in images:
