@@ -1,5 +1,5 @@
 # Population size
-population_size: 100
+population_size: 50
 
 # Number of generations
 num_generations: 25000
