@@ -14,6 +14,7 @@ if __name__ == '__main__':
     with open(config_path) as f:
         config = yaml.safe_load(f)
 
+    # Open the target image to be approximated
     target_img = Image.open(config['target_img_path'])
     target_img_array = np.array(target_img)
 
@@ -21,8 +22,11 @@ if __name__ == '__main__':
 
     counter = 0
     step = (config['num_generations'] // config['samples_to_save'])
-    STRIDE = 2
 
+    # This value means how many samples to skip every iteration. This is done to increase the GIF's speed
+    STRIDE = 2
+    
+    # Collect frames for the GIF file
     for i in range(config['samples_to_save'] // STRIDE):
         if counter == 0:
             img_path = f'{config["output_dir"]}/{config["target_img_alias"]}/generation{1}.png'
@@ -39,8 +43,12 @@ if __name__ == '__main__':
 
         counter += step * STRIDE
 
+    # Path where the GIF will be saved
     save_gif_path = f'gifs/{config["target_img_alias"].replace(" ", "_").lower()}.gif'
+
+    # Convert collected frames to the GIF file and save the GIF
     images[0].save(save_gif_path, save_all=True, append_images=images[1:], duration=1, loop=0)
 
+    # Close opened images
     for img in images:
         img.close()

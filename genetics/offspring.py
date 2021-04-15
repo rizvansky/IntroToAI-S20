@@ -5,8 +5,8 @@ class Offspring:
     def __init__(self, chromosome):
         """
         Initialize the Offspring class object.
-        Chromosome is represented as a list of 1024 numbers of letter images
-        Gene - the number of letter image
+        Chromosome is represented as a list of 1024 16x16 images' numbers
+        Gene - 16x16 image's number
         """
         self.chromosome = chromosome
 
@@ -27,11 +27,11 @@ class Offspring:
 
     def cross(self, second):
         """
-        Make crossover of two offsprings
+        Perform the Uniform Order Crossover of two offsprings
 
         Args:
             self: Current offspring
-            second: Offspring class object, second offspring for crossover
+            second: Second offspring for crossover
 
         Returns:
             New offspring obtained by the crossover (child of these two offsprings)

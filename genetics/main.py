@@ -41,7 +41,7 @@ if __name__ == '__main__':
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
 
-    # Progress bar
+    # Progress bars
     counter = tqdm.tqdm(total=num_generations, desc='Generations', position=0, leave=True)
     fitness_log = tqdm.tqdm(total=0, position=1, bar_format='{desc}', leave=True)
 
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         population[int(population_size * 0.1): int(population_size * 0.3)] = \
             crossover_offsprings[0: int(population_size * 0.2)]
 
-        # Mutate all offsprings except top 10% of the population which goes to the next generation without changes
+        # Mutate all offsprings except top 10% of the population which go to the next generation without changes
         for j in range(int(population_size * 0.1), population_size):
             population[j][0].mutate(letters)
             img_array = build_image(population[j][0], letters)

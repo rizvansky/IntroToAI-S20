@@ -94,7 +94,8 @@ def load_letters(letters_dir):
 
 def build_image(offspring, letters):
     """
-    Construct an image using the offspring's chromosome
+    Construct an image using the offspring's chromosome. Note: 16x16 images must not intersect between each other.
+    Each 16x16 image occupy only its part of an approximated image.
 
     Args:
          offspring: Offspring class object
